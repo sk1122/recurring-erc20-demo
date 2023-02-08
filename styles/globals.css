@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: "Calsans";
+    src: url("../public/fonts/calsans.woff");
+}
+
+@font-face {
+    font-family: "Matter";
+    src: url("../public/fonts/Matter-Bold.woff");
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: "Matter";
+    src: url("../public/fonts/Matter-Regular.woff");
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: "Matter";
+    src: url("../public/fonts/Matter-Light.woff");
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: "Matter";
+    src: url("../public/fonts/Matter-Medium.woff");
+    font-weight: 600;
+}
+
+.text-cal {
+    font-family: Calsans;
+}
+
+.text-matter {
+    font-family: Matter;
+}
