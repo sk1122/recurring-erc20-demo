@@ -6,11 +6,13 @@
     "start": "next start"
   },
   "dependencies": {
-    "ethers": "^6.0.2",
+    "@rainbow-me/rainbowkit": "^0.11.0",
+    "ethers": "5.4",
     "next": "latest",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-hot-toast": "^2.4.0"
+    "react-hot-toast": "^2.4.0",
+    "wagmi": "^0.11.5"
   },
   "devDependencies": {
     "@types/node": "18.11.3",

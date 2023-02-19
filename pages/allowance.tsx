@@ -4,6 +4,7 @@ import Head from "next/head";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { useSigner } from "wagmi";
 
 const TEST_ERC20R_ADDRESS = "0x0f97e328cd9e2b842ada1a94545c32c121be2fe1";
 const TEST_ERC20R_ABI = [
@@ -247,18 +248,20 @@ const TEST_ERC20R_ABI = [
 const Home: NextPage = () => {
   const [allowances, setAllowances] = useState<any>([])
 
-  const getEMIs = async () => {
-    // @ts-ignore
-    const provider = new ethers.BrowserProvider(window.ethereum)
-    const signer = await provider.getSigner()
-    const address = await signer.getAddress()
-    
-    const contract = new ethers.Contract(TEST_ERC20R_ADDRESS, TEST_ERC20R_ABI, signer)
-    
-    const data = await contract.recurringAllowance(address, ethers.ZeroAddress)
-    console.log(data.map((x: any) => x), "provider")
+  const { data: signer } = useSigner()
 
-    setAllowances(data.map((x: any) => x));
+  const getEMIs = async () => {
+    if(signer) {
+      const address = await signer.getAddress()
+      
+      const contract = new ethers.Contract(TEST_ERC20R_ADDRESS, TEST_ERC20R_ABI, signer)
+      
+      const data = await contract.recurringAllowance(address, ethers.constants.AddressZero)
+      console.log(data, "Das")
+      setAllowances(data);
+    } else {
+      toast.error("Please connect a wallet first!")
+    }
   };
 
   useEffect(() => {
@@ -267,7 +270,7 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     getEMIs()
-  }, [])
+  }, [signer])
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center">
@@ -277,7 +280,49 @@ const Home: NextPage = () => {
       </Head>
 
       <main className="flex bg-gradient-to-b from-sky-600 via-gray-300 to-white text-black w-full h-screen flex-1 items-center justify-center px-20">
-        <p>dasdsa</p>
+        <div className="relative overflow-x-auto">
+          <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+              <tr>
+                <th scope="col" className="px-6 py-3">
+                  Amount per month
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  Next EMI
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  Last EMI
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  Time Period
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="bg-white dark:bg-gray-800">
+                <th
+                  scope="row"
+                  className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                >
+                  {ethers.utils
+                    .formatEther(allowances?.allowedAmount?.toString())
+                    .toString()} USDC
+                </th>
+                <td className="px-6 py-4">
+                  {new Date(allowances?.nextInterval?.toString()).toString()}
+                </td>
+                <td className="px-6 py-4">
+                  {new Date(
+                    allowances?.timeLimit?.toNumber() * 1000
+                  ).toDateString()}
+                </td>
+                <td className="px-6 py-4">
+                  {Math.floor(allowances?.timePeriod?.toNumber() / 86400)} Days
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </main>
     </div>
   );

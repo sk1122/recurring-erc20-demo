@@ -266,8 +266,8 @@ const Home: NextPage = () => {
       const contract = new ethers.Contract(TEST_ERC20R_ADDRESS, TEST_ERC20R_ABI, signer)
 
       const tx = await contract.recurringApprove(
-        ethers.ZeroAddress,
-        ethers.parseEther((singlePrice * number).toString()),
+        ethers.constants.AddressZero,
+        ethers.utils.parseEther((singlePrice * number).toString()),
         2678400,
         2678400 * months
       );
@@ -339,7 +339,9 @@ const Home: NextPage = () => {
             </p>
             <p className="text-matter w-1/2">
               EMI -{" "}
-              <span className="font-bold">{(singlePrice * number) / months}$</span>{" "}
+              <span className="font-bold">
+                {(singlePrice * number) / months}$
+              </span>{" "}
               Per Month
             </p>
             <div className="flex justify-center items-center text-matter font-bold space-x-3">
@@ -360,9 +362,21 @@ const Home: NextPage = () => {
                 </p>
               </div>
             </div>
-            <div onClick={() => setEMI()} className="py-3 px-2 font-bold text-matter bg-emerald-600 rounded-md text-white cursor-pointer">
-              Buy on EMI
-            </div>
+            {number > 0 && (
+              <div
+                onClick={() => setEMI()}
+                className="py-3 px-2 font-bold text-matter bg-emerald-600 rounded-md text-white cursor-pointer"
+              >
+                Buy on EMI
+              </div>
+            )}
+            {number <= 0 && (
+              <div
+                className="py-3 px-2 font-bold text-matter bg-emerald-600/30 cursor-not-allowed rounded-md text-white cursor-pointer"
+              >
+                Buy on EMI
+              </div>
+            )}
           </div>
         </div>
       </main>
