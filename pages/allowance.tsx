@@ -305,7 +305,7 @@ const Home: NextPage = () => {
                   className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                 >
                   {ethers.utils
-                    .formatEther(allowances?.allowedAmount?.toString())
+                    .formatEther(allowances?.allowedAmount?.toString() ?? "0")
                     .toString()} USDC
                 </th>
                 <td className="px-6 py-4">

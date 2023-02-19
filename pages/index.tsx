@@ -4,6 +4,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { useState } from 'react'
 import toast from "react-hot-toast"
+import { useSigner } from 'wagmi'
 
 const TEST_ERC20R_ADDRESS = "0x0f97e328cd9e2b842ada1a94545c32c121be2fe1";
 const TEST_ERC20R_ABI = [
@@ -248,6 +249,7 @@ const Home: NextPage = () => {
   const [number, setNumber] = useState(0)
   const [singlePrice, setSinglePrice] = useState(300)
   const [months, setMonths] = useState(6)
+  const { data: signer } = useSigner()
   
   const setEMI = async () => {
     const toastId = toast.loading(
@@ -258,11 +260,6 @@ const Home: NextPage = () => {
 
     try {
       // @ts-ignore
-      const provider = new ethers.BrowserProvider(window.ethereum)
-      await provider.send("eth_requestAccounts", [])
-
-      const signer = await provider.getSigner()
-
       const contract = new ethers.Contract(TEST_ERC20R_ADDRESS, TEST_ERC20R_ABI, signer)
 
       const tx = await contract.recurringApprove(
